@@ -118,10 +118,7 @@ namespace GPS.Collections
         public TValue this[TKey key]
         {
             get => _dictionary[key];
-            set
-            {
-               AddOrUpdate(key, value, (k, v) => v);
-            }
+            set => AddOrUpdate(key, value, (k, v) => v);
         }
 
         /// <summary>
