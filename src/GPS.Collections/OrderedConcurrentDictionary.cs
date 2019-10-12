@@ -120,7 +120,7 @@ namespace GPS.Collections
             get => _dictionary[key];
             set
             {
-                _dictionary[key] = value;
+               AddOrUpdate(key, value, (k, v) => v);
             }
         }
 
@@ -134,7 +134,7 @@ namespace GPS.Collections
         public object this[object key]
         {
             get => this[(TKey)key];
-            set => this[(TKey)key] = (TValue)value;
+            set => AddOrUpdate((TKey)key, (TValue)value, (k, v) => v);
         }
 
 
@@ -193,21 +193,20 @@ namespace GPS.Collections
         /// false if the key was already present.</returns>
         public bool TryAdd(TKey key, TValue value)
         {
-            if (!_dictionary.ContainsKey(key))
+            lock (_lock)
             {
-                lock (_lock)
+                if (!_dictionary.ContainsKey(key))
                 {
                     _queue.Enqueue(key);
                     _dictionary.TryAdd(key, value);
+
+                    return true;
                 }
-
-                return true;
+                else
+                {
+                    return false;
+                }
             }
-            else
-            {
-                return false;
-            }
-
         }
 
         /// <summary>
@@ -222,23 +221,24 @@ namespace GPS.Collections
             , Func<TKey, TValue> addValueFactory
             , Func<TKey, TValue, TValue> updateValueFactory)
         {
-            var value = addValueFactory(key);
-            if (!_dictionary.ContainsKey(key))
+            lock (_lock)
             {
-                lock (_lock)
+                var value = addValueFactory(key);
+                if (!_dictionary.ContainsKey(key))
                 {
                     _queue.Enqueue(key);
                     _dictionary.TryAdd(key, value);
                 }
-            }
-            else
-            {
-                value = updateValueFactory(key, addValueFactory(key));
 
-                _dictionary[key] = value;
-            }
+                else
+                {
+                    value = updateValueFactory(key, addValueFactory(key));
 
-            return value;
+                    _dictionary[key] = value;
+                }
+
+                return value;
+            }
         }
 
         /// <summary>
@@ -253,23 +253,24 @@ namespace GPS.Collections
             , TValue addValue
             , Func<TKey, TValue, TValue> updateValueFactory)
         {
-            var value = addValue;
-            if (!_dictionary.ContainsKey(key))
+            lock (_lock)
             {
-                lock (_lock)
+                var value = addValue;
+                if (!_dictionary.ContainsKey(key))
                 {
                     _queue.Enqueue(key);
                     _dictionary.TryAdd(key, value);
                 }
-            }
-            else
-            {
-                value = updateValueFactory(key, value);
 
-                _dictionary[key] = value;
-            }
+                else
+                {
+                    value = updateValueFactory(key, value);
 
-            return value;
+                    _dictionary[key] = value;
+                }
+
+                return value;
+            }
         }
 
         /// <summary>
@@ -286,25 +287,26 @@ namespace GPS.Collections
             , Func<TKey, TValue, TArg, TValue> updateValueFactory
             , TArg factoryArgument)
         {
-            var value = addValueFactory(key, factoryArgument);
-
-            if (!_dictionary.ContainsKey(key))
+            lock (_lock)
             {
+                var value = addValueFactory(key, factoryArgument);
 
-                lock (_lock)
+                if (!_dictionary.ContainsKey(key))
                 {
+
                     _queue.Enqueue(key);
                     _dictionary.TryAdd(key, value);
                 }
-            }
-            else
-            {
-                value = updateValueFactory(key, value, factoryArgument);
 
-                _dictionary[key] = value;
-            }
+                else
+                {
+                    value = updateValueFactory(key, value, factoryArgument);
 
-            return value;
+                    _dictionary[key] = value;
+                }
+
+                return value;
+            }
         }
 
         /// <summary>
@@ -383,7 +385,10 @@ namespace GPS.Collections
         /// ConcurrentQueue.</returns>
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            return _queue.Select(t => KeyValuePair.Create(t, _dictionary[t])).GetEnumerator();
+            lock (_lock)
+            {
+                return _queue.Select(t => KeyValuePair.Create(t, _dictionary[t])).GetEnumerator();
+            }
         }
 
         /// <summary>
@@ -528,16 +533,16 @@ namespace GPS.Collections
         /// of calling the method.</returns>
         IDictionaryEnumerator IDictionary.GetEnumerator()
         {
-            IReadOnlyDictionary<TKey, TValue> dictionary = null;
-
             lock (_lock)
             {
+                IReadOnlyDictionary<TKey, TValue> dictionary = null;
+
                 var values = new KeyValuePair<TKey, TValue>[Count];
                 CopyTo(values, 0);
                 dictionary = new OrderedConcurrentDictionary<TKey, TValue>(values);
-            }
 
-            return new ConcurrentDictionaryEnumerator(dictionary);
+                return new ConcurrentDictionaryEnumerator(dictionary);
+            }
         }
 
         /// <inheritdocs />
