@@ -7,7 +7,7 @@ namespace GPS.Collections.Tests
     {
         private static readonly int size = ArrayLink<object>.InitialSize;
         private static readonly int growth = (int)(size + size * ArrayLink<object>.GrowthRate);
-        private object[] _data =
+        private readonly object[] _data =
         {
                   (set: new [] { -1, -2, -3 }, size: 3, count: growth, higher: false, lower: true)
                 , (set: new [] { 0, 1, 2 }, size: 3, count: size, higher: false, lower: false)

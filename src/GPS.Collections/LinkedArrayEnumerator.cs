@@ -45,7 +45,7 @@ namespace GPS.Collections
         /// <returns>Value of TValue</returns>
         public TValue Current => _index != int.MinValue
                 ? _values[_index]
-                : default(TValue);
+                : default;
 
         /// <summary>
         /// Interface Accessor of the Current property.

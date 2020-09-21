@@ -8,7 +8,7 @@ namespace GPS.Collections.Tests
 {
     public class ArrayLink_Tests
     {
-        ITestOutputHelper _log;
+        readonly ITestOutputHelper _log;
 
         public ArrayLink_Tests(ITestOutputHelper log)
         {
@@ -21,7 +21,7 @@ namespace GPS.Collections.Tests
         {
             _log.WriteLine($"{data}");
 
-            var link = new ArrayLink<int>(0, data.size);
+            using var link = new ArrayLink<int>(0, data.size);
             link[data.index] = (set: true, value: data.index);
                         
             var count = (link.Lower?.ArraySize ?? 0) + 
@@ -42,7 +42,7 @@ namespace GPS.Collections.Tests
         {
              _log.WriteLine($"{data}");
 
-            var link = new ArrayLink<int>(0, ArrayLink<int>.InitialSize);
+            using var link = new ArrayLink<int>(0, ArrayLink<int>.InitialSize);
             foreach(var item in data.set) link[item] = (set: true, value: item);
                         
             var count = (link.Lower?.ArraySize ?? 0) + 

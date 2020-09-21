@@ -13,7 +13,7 @@ namespace GPS.Collections.Tests
 {
     public class MatrixArray_Tests
     {
-        ITestOutputHelper _log;
+        private readonly ITestOutputHelper _log;
 
         public MatrixArray_Tests(ITestOutputHelper log)
         {
@@ -34,7 +34,7 @@ namespace GPS.Collections.Tests
         {
             _log.WriteLine($"{data}");
 
-            var list = new MatrixArray<int>(data.size);
+            using var list = new MatrixArray<int>(data.size);
 
             Assert.Equal(0, (int)list.Count);
         }
@@ -45,7 +45,7 @@ namespace GPS.Collections.Tests
         {
             _log.WriteLine($"{data}");
 
-            var list = new MatrixArray<int>(data.index, data.count);
+            using var list = new MatrixArray<int>(data.index, data.count);
 
             Assert.Equal(data.count, list[data.index]);
         }
@@ -56,7 +56,7 @@ namespace GPS.Collections.Tests
         {
             _log.WriteLine($"{data}");
 
-            var list = new MatrixArray<int>(data.set);
+            using var list = new MatrixArray<int>(data.set);
 
             Assert.Equal(data.set.Length, list.Count);
             Assert.Equal(0, list.Lowest);
@@ -74,8 +74,10 @@ namespace GPS.Collections.Tests
         {
             _log.WriteLine($"{data}");
 
-            var list = new MatrixArray<int>();
-            list.Add(data.index);
+            using var list = new MatrixArray<int>
+            {
+                data.index
+            };
 
             Assert.Equal(1, (int)list.Count);
             Assert.Equal(0, list.Lowest);
@@ -89,7 +91,7 @@ namespace GPS.Collections.Tests
         {
             _log.WriteLine($"{data}");
 
-            var list = new MatrixArray<int>();
+            using var list = new MatrixArray<int>();
             list.AddRange(data.set);
             list.AddRange(data.set);
 
@@ -109,7 +111,7 @@ namespace GPS.Collections.Tests
         {
             _log.WriteLine($"{data}");
 
-            var list = new MatrixArray<int>();
+            using var list = new MatrixArray<int>();
             list.AddRangeAt(-1, data.set);
 
             Assert.Equal(data.set.Length, (int)list.Count);
@@ -128,27 +130,27 @@ namespace GPS.Collections.Tests
         {
             _log.WriteLine($"{data}");
 
-            var list = new MatrixArray<int>(data.index, data.count);
+            using var list = new MatrixArray<int>(data.index, data.count);
             list.Clear();
 
             Assert.Equal(0, (int)list.Count);
             Assert.Equal(0, list.Lowest);
             Assert.Equal(0, list.Highest);
-            Assert.Throws(typeof(IndexOutOfRangeException), () => list[data.index]);
+            Assert.Throws<IndexOutOfRangeException>(() => list[data.index]);
         }
 
         [Fact]
         public void Contains()
         {
-            var list = new MatrixArray<string>(10, "Test");
-            Assert.True(list.Contains("Test"));
-            Assert.False(list.Contains(""));
+            using var list = new MatrixArray<string>(10, "Test");
+            Assert.Contains("Test", list);
+            Assert.DoesNotContain("", list);
         }
 
         [Fact]
         public void IndexOf()
         {
-            var list = new MatrixArray<string>(10, "Test");
+            using var list = new MatrixArray<string>(10, "Test");
             Assert.Equal(10, list.IndexOf("Test"));
             Assert.Equal(Int32.MinValue, list.IndexOf(""));
         }
@@ -250,14 +252,12 @@ namespace GPS.Collections.Tests
 
         public long ObjectSize(object obj)
         {
-            using (Stream stream = new MemoryStream())
-            {
-                var formatter = new BinaryFormatter();
+            using Stream stream = new MemoryStream();
+            var formatter = new BinaryFormatter();
 
-                formatter.Serialize(stream, obj);
+            formatter.Serialize(stream, obj);
 
-                return stream.Length;
-            }
+            return stream.Length;
         }
 
     }

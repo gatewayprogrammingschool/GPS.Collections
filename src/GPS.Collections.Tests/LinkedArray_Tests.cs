@@ -13,7 +13,7 @@ namespace GPS.Collections.Tests
 {
     public class LinkedArray_Tests
     {
-        ITestOutputHelper _log;
+        readonly ITestOutputHelper _log;
 
         public LinkedArray_Tests(ITestOutputHelper log)
         {
@@ -34,8 +34,7 @@ namespace GPS.Collections.Tests
         {
             _log.WriteLine($"{data}");
 
-            var list = new LinkedArray<int>(data.size);
-
+            using var list = new LinkedArray<int>(data.size);
             Assert.Equal(0, (int)list.Count);
         }
 
@@ -45,7 +44,7 @@ namespace GPS.Collections.Tests
         {
             _log.WriteLine($"{data}");
 
-            var list = new LinkedArray<int>(data.index, data.count);
+            using var list = new LinkedArray<int>(data.index, data.count);
 
             Assert.Equal(data.count, list[data.index]);
         }
@@ -56,7 +55,7 @@ namespace GPS.Collections.Tests
         {
             _log.WriteLine($"{data}");
 
-            var list = new LinkedArray<int>(data.set);
+            using var list = new LinkedArray<int>(data.set);
 
             Assert.Equal(data.set.Length, list.Count);
             Assert.Equal(0, list.Lowest);
@@ -74,8 +73,10 @@ namespace GPS.Collections.Tests
         {
             _log.WriteLine($"{data}");
 
-            var list = new LinkedArray<int>();
-            list.Add(data.index);
+            using var list = new LinkedArray<int>
+            {
+                data.index
+            };
 
             Assert.Equal(1, (int)list.Count);
             Assert.Equal(0, list.Lowest);
@@ -89,7 +90,7 @@ namespace GPS.Collections.Tests
         {
             _log.WriteLine($"{data}");
 
-            var list = new LinkedArray<int>();
+            using var list = new LinkedArray<int>();
             list.AddRange(data.set);
             list.AddRange(data.set);
 
@@ -109,7 +110,7 @@ namespace GPS.Collections.Tests
         {
             _log.WriteLine($"{data}");
 
-            var list = new LinkedArray<int>();
+            using var list = new LinkedArray<int>();
             list.AddRangeAt(-1, data.set);
 
             Assert.Equal(data.set.Length, (int)list.Count);
@@ -128,27 +129,27 @@ namespace GPS.Collections.Tests
         {
             _log.WriteLine($"{data}");
 
-            var list = new LinkedArray<int>(data.index, data.count);
+            using var list = new LinkedArray<int>(data.index, data.count);
             list.Clear();
 
             Assert.Equal(0, (int)list.Count);
             Assert.Equal(0, list.Lowest);
             Assert.Equal(0, list.Highest);
-            Assert.Throws(typeof(IndexOutOfRangeException), () => list[data.index]);
+            Assert.Throws<IndexOutOfRangeException>(() => list[data.index]);
         }
 
         [Fact]
         public void Contains()
         {
-            var list = new LinkedArray<string>(10, "Test");
-            Assert.True(list.Contains("Test"));
-            Assert.False(list.Contains(""));
+            using var list = new LinkedArray<string>(10, "Test");
+            Assert.Contains("Test", list);
+            Assert.DoesNotContain("", list);
         }
 
         [Fact]
         public void IndexOf()
         {
-            var list = new LinkedArray<string>(10, "Test");
+            using var list = new LinkedArray<string>(10, "Test");
             Assert.Equal(10, list.IndexOf("Test"));
             Assert.Equal(list.Lowest - 1, list.IndexOf(""));
         }
@@ -172,7 +173,7 @@ namespace GPS.Collections.Tests
                 var positiveData = new int[data.Length];
                 for (int j = 0; j < data.Length; ++j)
                 {
-                    data[j] = (i * j + 10) ^ data[j] ;
+                    data[j] = (i * j + 10) ^ data[j];
                     positiveData[j] = Math.Abs(data[j]);
                 }
 
@@ -186,8 +187,8 @@ namespace GPS.Collections.Tests
             {
                 lsw.Mark("Loading LinkedArray", () => linkedArray = new LinkedArray<int>(set));
                 lsw.Mark("Loading List", () => list = new List<int>(set));
-                lsw.Mark("Loading Dictionary", () => { dictionary = new Dictionary<int, int>(); for(int j=0; j<set.Count; ++j) dictionary[set[j]] = set[j]; });
-                lsw.Mark("Loading SortedDictionary", () => { sortedDictionary = new SortedDictionary<int, int>(); for(int j=0; j<set.Count; ++j) sortedDictionary[set[j]] = set[j]; });
+                lsw.Mark("Loading Dictionary", () => { dictionary = new Dictionary<int, int>(); for (int j = 0; j < set.Count; ++j) dictionary[set[j]] = set[j]; });
+                lsw.Mark("Loading SortedDictionary", () => { sortedDictionary = new SortedDictionary<int, int>(); for (int j = 0; j < set.Count; ++j) sortedDictionary[set[j]] = set[j]; });
 
                 lsw.Mark("Find Last LinkedArray", () => linkedArray.Contains(data.Last()));
                 lsw.Mark("Find Last List", () => list.Contains(data.Last()));
@@ -241,22 +242,20 @@ namespace GPS.Collections.Tests
                 _log.WriteLine($"\"{mark.Mark}\",{mark.ExecutionMilliseconds}");
             }
 
-            foreach(var mark in lsw.ElapsedMarks)
+            foreach (var mark in lsw.ElapsedMarks)
             {
-                if(mark.Mark.StartsWith("Size")) _log.WriteLine($"{mark.Mark}");
+                if (mark.Mark.StartsWith("Size")) _log.WriteLine($"{mark.Mark}");
             }
         }
 
         public long ObjectSize(object obj)
         {
-            using (Stream stream = new MemoryStream())
-            {
-                var formatter = new BinaryFormatter();
+            using Stream stream = new MemoryStream();
+            var formatter = new BinaryFormatter();
 
-                formatter.Serialize(stream, obj);
-                
-                return stream.Length;
-            }
+            formatter.Serialize(stream, obj);
+
+            return stream.Length;
         }
 
     }

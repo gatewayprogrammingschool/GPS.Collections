@@ -2,7 +2,10 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/lgpu5pgn12nnl91x/branch/master?svg=true)](https://ci.appveyor.com/project/sharpninja/gps-collections/branch/master)
 
-Library of data structures for creating spacially oriented data.
+Library of specialized data structures .
+
+* (_new_) __OrderedConcurrentDictionary__ - `IDictionary<TKey, TValue>` that guarantees order of data insertion is preserved on the `Keys` collection and enumerator while maintaining thread-safe inserts and random access.
+* __MatrixArray__ - Spacial data structure providing always-sorted direct access for integer-indexed data.
 
 ## Installation
 
@@ -11,6 +14,38 @@ __GPS.Collections__ is available through Nuget.
 ```powershell
 
 nuget install GPS.Collections
+```
+
+## GPS.Collections.OrderedConcurrentDictionary&lt;TKey, TValue&gt;
+
+`IDictionary<TKey, TValue>` that guarantees order of data insertion is preserved on the `Keys` collection and enumerator while maintaining thread-safe inserts and random access.  
+
+### Additional Methods
+
+```csharp
+/// <summary>
+/// Reorders the data in the collection according the supplied selector,
+/// IComparer and ReorderDirection specified.
+/// </summary>
+/// <param name="selector">Func of the selector.</param>
+/// <param name="direction">ReorderDirection specifying the direction
+/// to sort the data.</param>
+public void Reorder(Func<(TKey Key, TValue Value), TKey> selector
+            , ReorderDirection direction = ReorderDirection.Ascending) { ... }
+
+
+/// <summary>
+/// Reorders the data in the collection according the supplied selector,
+/// IComparer and ReorderDirection specified.
+/// </summary>
+/// <param name="selector">Func of the selector.</param>
+/// <param name="comparer">IComparer instance that performs the test
+/// to determine the ordinality of two datum in the collection.</comparer>
+/// <param name="direction">ReorderDirection specifying the direction
+/// to sort the data.</param>
+public void Reorder(Func<(TKey Key, TValue Value), TKey> selector
+            , IComparer<TKey> comparer
+            , ReorderDirection direction = ReorderDirection.Ascending) { ... }
 ```
 
 ## GPS.Collections.MatrixArray&lt;T&gt;

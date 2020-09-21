@@ -200,11 +200,11 @@ namespace GPS.Collections
             set
             {
                 // Calculates the new size of the next ArrayLink&lt;T&gt; in the chain.
-                Func<int> newSize = () =>
+                int newSize()
                 {
                     var temp = ArraySize * GrowthRate;
                     return temp == (int)temp ? (int)temp : (int)temp + 1;
-                };
+                }
 
                 // Initializes the Highest and Lowest properties.
                 if (!Initialized)

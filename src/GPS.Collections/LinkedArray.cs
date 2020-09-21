@@ -37,7 +37,7 @@ namespace GPS.Collections
         /// <summary>
         /// Capacity of the Root
         /// </summary>
-        private int _size => _root.Size;
+        private int Size => _root.Size;
 
         /// <summary>
         /// Lowest value in the Collection
@@ -71,7 +71,7 @@ namespace GPS.Collections
         /// <returns></returns>
         public LinkedArray(int index, TValue value) : this()
         {
-            _root[index] = (set: true, value: value);
+            _root[index] = (set: true, value);
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace GPS.Collections
             get => _root[index].value;
             set
             {
-                _root[index] = (set: true, value: value);
+                _root[index] = (set: true, value);
             }
         }
 
@@ -162,7 +162,7 @@ namespace GPS.Collections
         /// <summary>
         /// Size of the collection.
         /// </summary>
-        public int Count => _size;
+        public int Count => Size;
 
         /// <summary>
         /// Flag indicated the writability of the collection.
