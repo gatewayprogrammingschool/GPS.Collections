@@ -37,7 +37,7 @@ namespace GPS.Collections
         /// <summary>
         /// Total width of the structure
         /// </summary>
-        private int _width = 0x800;
+        private readonly int _width = 0x800;
 
         /// <summary>
         /// Upper bounds of the size of the

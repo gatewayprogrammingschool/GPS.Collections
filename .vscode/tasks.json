@@ -6,8 +6,14 @@
         {
             "label": "build",
             "command": "dotnet build /nowarn:xUnit2017",
+            "options": {
+                "cwd": "src"
+            },
             "type": "shell",
-            "group": "build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "presentation": {
                 "reveal": "silent"
             },

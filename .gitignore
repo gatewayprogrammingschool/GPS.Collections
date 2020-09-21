@@ -1,3 +1,4 @@
+assets
 obj
 bin
 .vscode/solution-explorer
@@ -10,3 +11,5 @@ package
 .signature.p7s
 GatewayProgrammingSchool.xUnit.*
 src/GPS.Collections.Tests/Sorting/*Content_Types*.xml
+/src/.vs/GPS.Collections
+*.user

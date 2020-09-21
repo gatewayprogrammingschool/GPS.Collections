@@ -1,6 +1,6 @@
 /*
     # GPS.Collections
-    
+
     ## LinkedArrayEnumerator.cs
 
     Iterates over the LinkedArray data structure.
@@ -8,7 +8,7 @@
     ## Copyright
 
     2019 - Gateway Programming School, Inc.
-    
+
     This notice must be retained for any use the code
     herein in whole or in part for any use.
  */
@@ -60,7 +60,7 @@ namespace GPS.Collections
             }
 
             /// <summary>
-            /// Move the cursor to the next value of the 
+            /// Move the cursor to the next value of the
             /// data set.
             /// </summary>
             /// <returns>True if move was successful.</returns>

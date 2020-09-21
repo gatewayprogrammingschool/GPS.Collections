@@ -5,7 +5,7 @@ namespace GPS.Collections.Tests
 {
     public class LinkedArrayComparisonSet : IEnumerable<object[]>
     {
-        object[] _data = { new int[] {
+        private readonly object[] _data = { new int[] {
 -99616,90880,-93995,-3254,75379,44445,72720,-72997,53555,26911,
 -73561,-657,-99728,82623,36823,34028,-45654,-4874,-63292,-42092,
 -44294,-28826,-21687,-51121,345,-33018,-24558,-89809,7890,-92494,

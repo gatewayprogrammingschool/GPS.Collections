@@ -1,17 +1,20 @@
-<?xml version="1.0"?>
-<package >
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>GPS.Collections</id>
-    <version>0.2.2</version>
+    <version>1.1.1</version>
     <title>Library of sparse collections and tools.</title>
     <authors>The Sharp Ninja</authors>
-    <owners>Gateway Programming School, Inc.</owners>
-    <license type="expression">MIT</license>
-    <projectUrl>https://gatewayprogrammingschool.github.io/GPS.Collections/</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/gatewayprogrammingschool/GPS.Collections/master/resources/GPS.Collections-logo.png</iconUrl>
+    <owners>Gateway Programming School,Inc.</owners>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <icon>content\GPS.Collections-logo.png</icon>
+    <projectUrl>https://gatewayprogrammingschool.github.io/GPS.Collections/</projectUrl>
     <description>Library of sparse collections and tools for working with them.</description>
     <copyright>Copyright 2019 Gateway Programming School, Inc.</copyright>
     <tags>GPS Collections Arrays</tags>
   </metadata>
+  <files>
+    <file src="..\..\resources\GPS.Collections-logo.png" target="content\GPS.Collections-logo.png" />
+  </files>
 </package>
