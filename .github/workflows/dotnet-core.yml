@@ -28,7 +28,7 @@ jobs:
     
     - name: Pack
       run: |
-        nuget pack src/GPS.Collections/GPS.Collections.csproj -OutputDirectory ./artifacts
+        nuget pack src/GPS.Collections/GPS.Collections.csproj -OutputDirectory ./artifacts -Symbols -Properties Configuration=Debug
         nuget push artifacts/GPS.Collections.*.nupkg -ApiKey ${{ secrets.NUGET_KEY }} -Verbosity detailed
     
     - name: Upload a Build Artifact
