@@ -103,7 +103,7 @@ namespace GPS.Collections
         /// data for the collection.</param>
         public OrderedConcurrentDictionary(IEnumerable<KeyValuePair<TKey, TValue>> data
             , IEqualityComparer<TKey> comparer = null)
-            : this(new Dictionary<TKey, TValue>(data)
+            : this(data.ToDictionary(pair => pair.Key, pair => pair.Value)
                     , comparer)
         {
         }
@@ -195,9 +195,17 @@ namespace GPS.Collections
                 if (!_dictionary.ContainsKey(key))
                 {
                     _queue.Enqueue(key);
-                    _dictionary.TryAdd(key, value);
 
-                    return true;
+                    try
+                    {
+                        _dictionary.Add(key, value);
+
+                        return true;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
                 }
                 else
                 {
@@ -224,7 +232,17 @@ namespace GPS.Collections
                 if (!_dictionary.ContainsKey(key))
                 {
                     _queue.Enqueue(key);
-                    _dictionary.TryAdd(key, value);
+
+                    try
+                    {
+                        _dictionary.Add(key, value);
+
+                        return value;
+                    }
+                    catch
+                    {
+                        return default;
+                    }
                 }
 
                 else
@@ -256,7 +274,17 @@ namespace GPS.Collections
                 if (!_dictionary.ContainsKey(key))
                 {
                     _queue.Enqueue(key);
-                    _dictionary.TryAdd(key, value);
+
+                    try
+                    {
+                        _dictionary.Add(key, value);
+
+                        return value;
+                    }
+                    catch
+                    {
+                        return default;
+                    }
                 }
 
                 else
@@ -292,7 +320,17 @@ namespace GPS.Collections
                 {
 
                     _queue.Enqueue(key);
-                    _dictionary.TryAdd(key, value);
+
+                    try
+                    {
+                        _dictionary.Add(key, value);
+
+                        return value;
+                    }
+                    catch
+                    {
+                        return default;
+                    }
                 }
 
                 else
@@ -384,7 +422,7 @@ namespace GPS.Collections
         {
             lock (_lock)
             {
-                return _queue.Select(t => KeyValuePair.Create(t, _dictionary[t])).GetEnumerator();
+                return _queue.Select(t => new KeyValuePair<TKey, TValue>(t, _dictionary[t])).GetEnumerator();
             }
         }
 
@@ -574,7 +612,7 @@ namespace GPS.Collections
             /// <inheritdocs />
             public bool MoveNext()
             {
-                return _keys.TryDequeue(out _k);
+                return (_k = _keys.Dequeue())?.Equals(default(TKey)) ?? false;
             }
 
             /// <inheritdocs />

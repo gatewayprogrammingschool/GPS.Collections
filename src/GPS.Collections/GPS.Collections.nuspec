@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>GPS.Collections</id>
-    <version>1.1.1</version>
+    <version>1.2.0</version>
     <title>Library of sparse collections and tools.</title>
     <authors>The Sharp Ninja</authors>
     <owners>Gateway Programming School,Inc.</owners>
