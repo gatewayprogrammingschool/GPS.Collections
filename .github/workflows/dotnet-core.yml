@@ -11,34 +11,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.301
+    
     - name: Install dependencies
       run: dotnet restore src/GPS.Collections.sln
+    
     - name: Build
       run: dotnet build src/GPS.Collections.sln --configuration Debug --no-restore
+    
     - name: Test
-      run: dotnet test src/GPS.Collections.sln --no-restore --verbosity normal
+      run: dotnet test src/GPS.Collections.sln --no-build --no-restore --verbosity normal
+    
     - name: Pack
-      run: dotnet pack src/GPS.Collections.sln -o ./artifacts --no-build --no-restore --verbosity normal
+      run: |
+        nuget pack src/GPS.Collections/GPS.Collections.csproj -o ./artifacts --no-build --no-restore --verbosity normal
+        nuget push artifacts/GPS.Collections.*.nupkg -ApiKey ${{ secrets.NUGET_KEY }} -Verbosity detailed
+    
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.0
       with:
         path: ./artifacts/GPS.Collections.*.nupkg
-          
-  deploy:
-    needs: [build]
-    runs-on: windows-latest
-    steps:
-     - name: Publish NuGet
-       uses: brandedoutcast/publish-nuget@v2.5.5     
-       with:
-        # Filepath of the project to be packaged, relative to root of repository
-        PROJECT_FILE_PATH: src/GPS.Collections/GPS.Collections.csproj
-        # API key to authenticate with NuGet server
-        NUGET_KEY:  ${{ secrets.NUGET_KEY }}
-        # Flag to toggle pushing symbols along with nuget package to the server, disabled by default
-        INCLUDE_SYMBOLS: true
-      
